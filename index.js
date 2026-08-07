@@ -8,8 +8,6 @@ const config = require("./settings.json");
 const express = require("express");
 const http = require("http");
 const https = require("https");
-const net = require("net");
-const dns = require("dns");
 
 // ============================================================
 // EXPRESS SERVER - Keep Render/Aternos alive
@@ -1186,54 +1184,6 @@ function getReconnectDelay() {
   return delay + jitter;
 }
 
-function runConnectionDiagnostics() {
-  const host = config.server.ip;
-  const port = Number(config.server.port);
-
-  addLog(`[Diagnostics] DNS lookup started for ${host}...`);
-
-  dns.lookup(host, { family: 4 }, (dnsErr, address) => {
-    if (dnsErr) {
-      addLog(`[Diagnostics] DNS FAILED: ${dnsErr.code || dnsErr.message}`);
-      return;
-    }
-
-    addLog(`[Diagnostics] DNS OK: ${host} -> ${address}`);
-
-    const socket = new net.Socket();
-    let finished = false;
-
-    const finish = (message, shouldDestroy = true) => {
-      if (finished) return;
-      finished = true;
-      addLog(message);
-      if (shouldDestroy) {
-        try { socket.destroy(); } catch (_) {}
-      }
-    };
-
-    socket.setTimeout(10000);
-
-    socket.once("connect", () => {
-      finish(`[Diagnostics] TCP OK: ${host}:${port} is reachable`);
-    });
-
-    socket.once("timeout", () => {
-      finish(`[Diagnostics] TCP TIMEOUT: ${host}:${port} did not respond within 10s`);
-    });
-
-    socket.once("error", (err) => {
-      finish(`[Diagnostics] TCP FAILED: ${err.code || err.message}`);
-    });
-
-    try {
-      socket.connect(port, host);
-    } catch (err) {
-      finish(`[Diagnostics] TCP START FAILED: ${err.code || err.message}`);
-    }
-  });
-}
-
 function createBot() {
   if (isReconnecting) {
     addLog("[Bot] Already reconnecting, skipping...");
@@ -1254,7 +1204,6 @@ function createBot() {
 
   addLog(`[Bot] Creating bot instance...`);
   addLog(`[Bot] Connecting to ${config.server.ip}:${config.server.port}`);
-  runConnectionDiagnostics();
 
   try {
     // FIX: use version:false to auto-detect server version so the bot can join any server.
@@ -1274,58 +1223,23 @@ function createBot() {
       checkTimeoutInterval: 600000,
     });
 
-    addLog("[Bot] Mineflayer instance created successfully.");
-
-    // Low-level diagnostics. These help distinguish DNS/TCP/handshake/login/spawn failures.
-    if (bot._client && typeof bot._client.on === "function") {
-      bot._client.on("connect", () => {
-        addLog("[Connection] TCP socket connected; waiting for Minecraft handshake...");
-      });
-      bot._client.on("error", (err) => {
-        addLog(`[Connection] Protocol/socket error: ${err.message || err}`);
-      });
-      bot._client.on("end", () => {
-        addLog("[Connection] Low-level socket ended.");
-      });
-    }
-
-    bot.on("login", () => {
-      addLog(`[Bot] LOGIN event received. Minecraft version: ${bot.version || "unknown"}`);
-    });
-
-    bot.on("message", (message) => {
-      try {
-        const text = typeof message?.toString === "function" ? message.toString() : String(message);
-        if (text.trim()) addLog(`[ServerMessage] ${text}`);
-      } catch (_) {}
-    });
-
     bot.loadPlugin(pathfinder);
 
     // FIX: connection timeout - end the old bot before reconnecting to avoid ghost bots
     clearBotTimeouts();
     connectionTimeoutId = setTimeout(() => {
       if (!botState.connected) {
-        addLog("[Bot] CONNECTION TIMEOUT: no spawn received after 180 seconds.");
-        addLog("[Bot] Check the diagnostics above for DNS/TCP/handshake/login information.");
+        addLog("[Bot] Connection timeout - no spawn received");
         try {
           bot.removeAllListeners();
           bot.end();
         } catch (e) {
-          addLog(`[Bot] Error while closing timed-out connection: ${e.message}`);
+          /* ignore */
         }
         bot = null;
         scheduleReconnect();
       }
-    }, 180000); // 180s maximum connection/spawn wait
-
-    // Connection-phase heartbeat so Render logs don't appear frozen.
-    const connectionHeartbeatId = setInterval(() => {
-      if (!botState.connected) {
-        addLog("[Bot] Still waiting for Minecraft login/spawn...");
-      }
-    }, 15000);
-    activeIntervals.push(connectionHeartbeatId);
+    }, 150000); // 150s - Aternos servers can take 90-120s to finish spawning a player
 
     // FIX: guard against spawn firing twice (can happen on some servers)
     let spawnHandled = false;
@@ -1442,9 +1356,8 @@ function createBot() {
     });
 
     bot.on("error", (err) => {
-      const msg = err.message || String(err);
+      const msg = err.message || "";
       addLog(`[Bot] Error: ${msg}`);
-      if (err && err.code) addLog(`[Bot] Error code: ${err.code}`);
       botState.errors.push({ type: "error", message: msg, time: Date.now() });
       // Don't reconnect on error - let 'end' event handle it
     });
@@ -2157,7 +2070,7 @@ addLog("=".repeat(50));
 addLog("  Minecraft AFK Bot v2.5 - Bug-Fixed Edition");
 addLog("=".repeat(50));
 addLog(`Server: ${config.server.ip}:${config.server.port}`);
-addLog(`Version setting: ${config.server.version || "auto-detect"}`);
+addLog(`Version: ${config.server.version}`);
 addLog(
   `Auto-Reconnect: ${config.utils["auto-reconnect"] ? "Enabled" : "Disabled"}`,
 );
