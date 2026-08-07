@@ -1,14 +1,14 @@
 {
   "name": "AFK Bot",
   "bot-account": {
-    "username": "Slobot00",
+    "username": "Jarvis01",
     "password": "",
     "type": "offline"
   },
   "server": {
-    "ip": "saugat_stha.aternos.me",
-    "port": 41023,
-    "version": "1.21.11",
+    "ip": "saugat_stha.aternos.me:41023",
+    "port":41023 ,
+    "version": "",
     "try-creative": false
   },
   "position": {
@@ -31,8 +31,8 @@
       "repeat": true,
       "repeat-delay": 120,
       "messages": [
-        "hi player",
-        "Do you like to play Minecraft!?"
+        "Hii player",
+        "Do you like to play Minecraft!"
       ]
     },
     "chat-log": true,
@@ -62,20 +62,6 @@
     "beds": false,
     "chat": true,
     "console-commands": true
-  },
-  "automation": {
-    "auto-farm": {
-      "enabled": false
-    },
-    "auto-mine": {
-      "enabled": false
-    },
-    "auto-chop": {
-      "enabled": false
-    },
-    "auto-collect": {
-      "enabled": true
-    }
   },
   "combat": {
     "attack-mobs": true,
