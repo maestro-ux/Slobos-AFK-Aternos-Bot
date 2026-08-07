@@ -5,12 +5,12 @@
     "password": "",
     "type": "offline"
   },
- "server": {
-  "ip": "platyfish.aternos.host",
-  "port": 41023,
-  "version": "1.21.11",
-  "try-creative": false
-},
+  "server": {
+    "ip": "saugat_stha.aternos.me",
+    "port": 41023,
+    "version": "1.21.11",
+    "try-creative": false
+  },
   "position": {
     "enabled": true,
     "x": 0,
@@ -31,8 +31,8 @@
       "repeat": true,
       "repeat-delay": 120,
       "messages": [
-        "Hii player",
-        "Do you like to play Minecraft!"
+        "Hello player",
+        "I like to play Minecraft!"
       ]
     },
     "chat-log": true,
