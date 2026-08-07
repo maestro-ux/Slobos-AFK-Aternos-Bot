@@ -6,8 +6,8 @@
     "type": "offline"
   },
   "server": {
-    "ip": "slobtest1.aternos.me",
-    "port": 27586,
+    "ip": "saugat_stha.aternos.me:41023",
+    "port": 41023,
     "version": "",
     "try-creative": false
   },
