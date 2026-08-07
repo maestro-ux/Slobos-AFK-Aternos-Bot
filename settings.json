@@ -7,8 +7,8 @@
   },
   "server": {
     "ip": "saugat_stha.aternos.me",
-    "port":41023 ,
-    "version": "",
+    "port": 41023,
+    "version": "1.21.11",
     "try-creative": false
   },
   "position": {
