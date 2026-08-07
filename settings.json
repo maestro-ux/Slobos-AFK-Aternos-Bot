@@ -6,7 +6,7 @@
     "type": "offline"
   },
   "server": {
-    "ip": "saugat_stha.aternos.me:41023",
+    "ip": "saugat_stha.aternos.me",
     "port":41023 ,
     "version": "",
     "try-creative": false
