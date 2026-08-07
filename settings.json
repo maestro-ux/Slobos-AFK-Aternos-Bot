@@ -32,7 +32,8 @@
       "repeat-delay": 120,
       "messages": [
         "I'm a regular player",
-      
+        "I like to play Minecraft!"
+      ]
     },
     "chat-log": true,
     "auto-reconnect": true,
@@ -72,7 +73,7 @@
   },
   "discord": {
     "enabled": false,
-    "webhookUrl": "https://discord.gg/XfzCBrbx2",
+    "webhookUrl": "YOUR_DISCORD_WEBHOOK_URL_HERE",
     "events": {
       "connect": true,
       "disconnect": true,
@@ -82,4 +83,4 @@
   "chat": {
     "respond": true
   }
-
+}
