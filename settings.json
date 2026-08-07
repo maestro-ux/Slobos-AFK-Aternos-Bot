@@ -63,6 +63,20 @@
     "chat": true,
     "console-commands": true
   },
+  "automation": {
+    "auto-farm": {
+      "enabled": false
+    },
+    "auto-mine": {
+      "enabled": false
+    },
+    "auto-chop": {
+      "enabled": false
+    },
+    "auto-collect": {
+      "enabled": true
+    }
+  },
   "combat": {
     "attack-mobs": true,
     "auto-eat": true
@@ -73,7 +87,7 @@
   },
   "discord": {
     "enabled": false,
-    "webhookUrl": "YOUR_DISCORD_WEBHOOK_URL_HERE",
+    "webhookUrl": "https://discord.gg/XfzCBrbx2",
     "events": {
       "connect": true,
       "disconnect": true,
