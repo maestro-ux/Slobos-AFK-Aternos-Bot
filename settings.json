@@ -8,7 +8,7 @@
   "server": {
     "ip": "saugat_stha.aternos.me",
     "port": 41023,
-    "version": "1.21.11",
+    "version": "1.21.11 (132)",
     "try-creative": false
   },
   "position": {
@@ -31,7 +31,7 @@
       "repeat": true,
       "repeat-delay": 120,
       "messages": [
-        "Hello player",
+        "I'm a regular player",
         "I like to play Minecraft!"
       ]
     },
